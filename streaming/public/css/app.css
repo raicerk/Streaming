@@ -1,0 +1,23 @@
+video {
+    margin-right: 20px;
+}
+
+#wrap{
+    margin: 0 auto;
+    width: 600px;
+    height: 100%;
+}
+
+#vid1{
+    width: 150px;
+    height: 150px;
+    z-index: 1;
+    left: 435px;
+    top: -220px;
+    position: relative;
+}
+
+#vid2{
+    width: 600px;
+    height: 600px;
+}
