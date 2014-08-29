@@ -144,15 +144,28 @@
 				$('.fancybox').fancybox();
 
 				$("#fancybox-manual-b").click(function() {
-					$.fancybox.open({
-						href : 'http://172.16.192.163:3002/<?php echo base64_encode(date("d-m-Y H:i:s")); ?>',
-						type : 'iframe',
-						padding : 5
-					});
+					var parametros = {
+		               	'accion' : 'CreaSala'
+		        	};
+		        	$.ajax({
+		                	data:  parametros,
+		                	url:   'script.php',
+		                	type:  'post',
+		                beforeSend: function () {
+		                    $("#resultado").html("Conectando...");
+		                },
+		                success:  function (response) {
+	                        $.fancybox.open({
+								href : 'http://localhost:3002/'+response,
+								type : 'iframe',
+								padding : 5
+							});
+		                }
+		        	});
+					
 				});
 
 			});
 		</script>
-
 	</body>
 </html>
