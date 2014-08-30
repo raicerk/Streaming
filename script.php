@@ -6,7 +6,7 @@ $opcion = $_POST['accion'];
 switch ($opcion) {
 	case 'CreaSala':
 		$controlador = new Controlador();
-		echo $controlador->CreaSala();
+		echo $controlador->CreaSala($_POST['IdMesa']);
 	break;
 	
 	default:

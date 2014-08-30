@@ -145,8 +145,10 @@
 
 				$("#fancybox-manual-b").click(function() {
 					var parametros = {
-		               	'accion' : 'CreaSala'
+		               	'accion' : 'CreaSala',
+		               	'IdMesa' : '<?php echo $_GET["NM"]; ?>'
 		        	};
+
 		        	$.ajax({
 		                	data:  parametros,
 		                	url:   'script.php',
