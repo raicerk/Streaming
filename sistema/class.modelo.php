@@ -15,34 +15,23 @@ class Db{
         }
     }
  
-	protected function AbrirConexion($NombreConexion){
-		switch ($NombreConexion) {
-			case 'NexoRSU':
-				try{
-					$conn=mssql_connect(constant('db_hostnameRSU'),constant('db_usernameRSU'),constant('db_passwordRSU')) ;
-					$res = mssql_select_db(constant('db_nameRSU'),$conn);
-					return $conn;
-				}catch(Exception $ex){
-					throw new Exception ("La conexión al servidor a fallado..");
-				}
-			break;
-			
-			default:
-				# code...
-			break;
-		}
-	}
+	protected function Conexion(){
 
-	protected function CerrarConexion($Conexion){
-		if(isset($Conexion) ){
-			mssql_close($Conexion);
-			unset($Conexion);
-		}
+		$conexion = new mysqli(constant('db_hostname'), constant('db_username'), constant('db_password'), constant('db_name'));
+		if ($conexion->connect_errno) {
+		    return "Fallo al contenctar a MySQL: (" . $conexion->connect_errno . ") " . $conexion->connect_error;
+		}else{
+			return $conexion;
+		}	
 	}
-
 }
 
 class Modelo extends Db{
+
+	private $NombreSala;
+	private $Fecha;
+	private $Hora;
+	private $Mesa;
  
     public function __get($property){
         if (property_exists($this, $property)){
@@ -57,47 +46,27 @@ class Modelo extends Db{
     }
 
 
-	public function query($NombreConexion , $Procedimiento, $array_variables , $TipoRetorno){
+	public function InsertaSala(){
 
-		$Conexion = Db::AbrirConexion($NombreConexion);
+		$conexion = Db::Conexion();
+		$sql = 'CALL InsertaSala(?, ?, ?, ?);';
+	    $sentencia = $conexion->prepare($sql);
+	 	$sentencia->bind_Param('sssss', $NombreSala,$Fecha,$Hora, $Mesa);
 
-		if ($TipoRetorno == "Boolean") {
-			$procedure = mssql_init($Procedimiento, $Conexion);
-			foreach ($array_variables as $variable) {
-				$total = "";
-				foreach ($variable as $key => $value) {
-					$total .= $value.",";
-				}
-				$seccion = explode(",", $total);
-				mssql_bind($procedure, $seccion[0], $seccion[1], $seccion[2]);
-			}
-			$estado = mssql_execute($procedure);
-			if ($estado) {
-				return true;
-			}else{
-				return false;
-			}
-			Bd::CerrarConexion($Conexion);
-		}
-
-		if ($TipoRetorno == "Data") {
-			$procedure = mssql_init($Procedimiento, $Conexion);
-			foreach ($array_variables as $variable) {
-				$total = "";
-				foreach ($variable as $key => $value) {
-					$total .= $value.",";
-				}
-				$seccion = explode(",", $total);
-				mssql_bind($procedure, $seccion[0], $seccion[1], $seccion[2]);
-			}
-			$resultado = mssql_execute($procedure);
-			$array = array();
-			while ($row = mssql_fetch_array($resultado)) {
-				$array[] = $row;
-			}
-			return $array;
-			Bd::CerrarConexion($Conexion);
-		}
+		$NombreSala 	= $this->NombreSala;
+		$Fecha 			= $this->Fecha;
+		$Hora 			= $this->Hora;
+		$Mesa 			= $this->Mesa;
+	    
+	    if($sentencia->execute()){
+	        $conexion->close();
+	        $sentencia->close();
+	        return true;
+	    }else{
+	        $conexion->close();
+	        $sentencia->close();
+	        return false;
+	    }
 	}
 }
 
