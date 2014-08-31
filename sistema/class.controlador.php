@@ -10,7 +10,7 @@
 
 			$fecha = date("Y-m-d");
 			$hora = date("H:i:s");
-			$sala = base64_encode(date("d-m-Y h:i:s"));
+			$sala = base64_encode(date("dmYhis"));
 			$estado = 1;
 			
 			$modelo->IdMesa = $IdMesa;
